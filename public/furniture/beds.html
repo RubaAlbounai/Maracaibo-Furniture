@@ -18,7 +18,7 @@
     <nav class="nav-links">
       <a href="..\index.html">Home</a>
       <a href="chairs.html">Chairs</a>
-      <a href="sofas.html">beds</a>
+      <a href="sofas.html">sofas</a>
       <a href="tables.html">Tables</a>
       <a class="active" href="beds.html">Beds</a>
       <a href="accessories.html">Accessories</a>
@@ -45,7 +45,6 @@
     <img class="modal-content" id="img01">
     <div id="caption"></div>
   </div>
-
   <footer>
     <a class="openbtn" onclick="openNav()"> <i class="fa fa-fw fa-envelope"></i> Contact us</a> </div>
     <p>This website is dedicated to showcasing furniture at attractive prices and of the best quality.</p>
@@ -72,6 +71,7 @@
       document.documentElement.scrollTop = 400;
     }
   </script>
+  
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       loadbeds();
@@ -96,7 +96,7 @@
 
         container.innerHTML += `
     <div class="category-card">
-      <img src="${displayImage}" alt="${bed.name}">
+      <img class="zoom-img" src="${displayImage}" alt="${bed.name}">
       <h3>${bed.name}</h3>
       <p class="price">$${bed.price}</p>
       <button class="add-to-cart"
@@ -158,8 +158,52 @@
       closeBtn.onclick = () => modal.style.display = "none";
       modal.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
     }
-  </script>
+    /* ZOOM */
+    function attachZoomEvents() {
+      const modal = document.getElementById("myModal");
+      const modalImg = document.getElementById("img01");
+      const captionText = document.getElementById("caption");
+      const closeBtn = document.querySelector(".close");
 
+      document.querySelectorAll(".zoom-img").forEach(img => {
+        img.onclick = () => {
+          modal.style.display = "block";
+          modalImg.src = img.src;
+          captionText.innerHTML = img.alt;
+        };
+      });
+
+      closeBtn.onclick = () => modal.style.display = "none";
+      modal.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+    }
+  </script>
+  <script>
+    const modal = document.getElementById("myModal");
+    const modalImg = document.getElementById("img01");
+    const captionText = document.getElementById("caption");
+    const closeBtn = document.querySelector(".close");
+
+    // اختر كل الصور القابلة للتكبير
+    document.querySelectorAll(".zoom-img").forEach(img => {
+      img.addEventListener("click", function () {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+        captionText.innerHTML = this.alt;
+      });
+    });
+
+    // إغلاق المودال
+    closeBtn.onclick = function () {
+      modal.style.display = "none";
+    };
+
+    // إغلاق عند الضغط خارج الصورة
+    modal.onclick = function (e) {
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+  </script>
 </body>
 
 </html>

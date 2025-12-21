@@ -31,9 +31,8 @@
     <section class="hero">
         <h1>Sofas Collection</h1>
         <p>Discover stylish, comfortable sofas for every corner of your home.</p>
-        <button onclick="myFunction1()" id="myBtn"> Let's start</button>
+    <button onclick="myFunction1()" id="myBtn"> Let's start</button>
     </section>
-
 
     <!-- Products Grid -->
     <section class="categories">
@@ -46,7 +45,7 @@
         <img class="modal-content" id="img01">
         <div id="caption"></div>
     </div>
-    <script src="../scripts/sofas.js"></script>
+    <!--<script src="../scripts/sofas.js"></script>-->
 
     <footer>
         <a class="openbtn" onclick="openNav()"> <i class="fa fa-fw fa-envelope"></i> Contact us</a> </div>
@@ -66,6 +65,12 @@
 
         function closeNav() {
             document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+        <script>
+        function myFunction1() {
+            document.body.scrollTop = 400;
+            document.documentElement.scrollTop = 400;
         }
     </script>
     <script>
