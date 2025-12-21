@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beds</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+  <header class="main-header">
+    <div class="logo">Maracaibo Furniture</div>
+
+    <nav class="nav-links">
+      <a href="..\index.html">Home</a>
+      <a href="chairs.html">Chairs</a>
+      <a href="sofas.html">beds</a>
+      <a href="tables.html">Tables</a>
+      <a class="active" href="beds.html">Beds</a>
+      <a href="accessories.html">Accessories</a>
+      <a href="../cart.html">Cart</a>
+      <a href="../checkout.html">Checkout</a>
+    </nav>
+  </header>
+  <!-- END HEADER -->
+
+  <!-- PAGE TITLE -->
+  <section class="hero">
+    <h1>Beds Collection</h1>
+    <p>Discover stylish, comfortable Beds for every corner of your home.</p>
+    <button onclick="myFunction1()" id="myBtn"> Let's start</button>
+  </section>
+  <!-- Products Grid -->
+  <section class="categories">
+    <div id="beds-list" class="category-grid">
+      <!-- Products will be loaded here -->
+    </div>
+  </section>
+  <div id="myModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+  </div>
+
+  <footer>
+    <a class="openbtn" onclick="openNav()"> <i class="fa fa-fw fa-envelope"></i> Contact us</a> </div>
+    <p>This website is dedicated to showcasing furniture at attractive prices and of the best quality.</p>
+  </footer>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <p>Contact Sales</p>
+    <p>If you want to report an something, or if you want to make a suggestion
+      send us an e-mail:
+      maracaibo@gmail.com</p>
+  </div>
+  <script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "100%";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+  </script>
+  <script>
+    function myFunction1() {
+      document.body.scrollTop = 400;
+      document.documentElement.scrollTop = 400;
+    }
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      loadbeds();
+    });
+
+    function loadbeds() {
+      const beds = [
+        { id: 301, name: "Modern Gray Bed", price: 800, image: "bed1.jpg" },
+        { id: 302, name: "Luxury Leather Bed", price: 1200, image: "bed2.jpg" },
+        { id: 303, name: "Classic Family Bed", price: 950, image: "bed3.jpg" },
+        { id: 304, name: "Minimalist White Bed", price: 1100, image: "bed4.jpg" },
+        { id: 305, name: "Corner Comfort Bed", price: 1300, image: "bed5.jpg" },
+        { id: 306, name: "Blue Velvet Bed", price: 1000, image: "bed6.jpg" },
+      ];
+
+      const container = document.getElementById("beds-list");
+      container.innerHTML = "";
+
+      beds.forEach(bed => {
+        const displayImage = `../furniture/assets/images/beds/${bed.image}`;
+        const cartImage = `furniture/assets/images/beds/${bed.image}`;
+
+        container.innerHTML += `
+    <div class="category-card">
+      <img src="${displayImage}" alt="${bed.name}">
+      <h3>${bed.name}</h3>
+      <p class="price">$${bed.price}</p>
+      <button class="add-to-cart"
+        data-id="${bed.id}"
+        data-name="${bed.name}"
+        data-price="${bed.price}"
+        data-image="${cartImage}">
+        Add to Cart
+      </button>
+    </div>
+  `;
+      });
+
+
+      attachCartEvents();
+      attachZoomEvents();
+    }
+
+    function attachCartEvents() {
+      document.querySelectorAll(".add-to-cart").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const product = {
+            id: btn.dataset.id,
+            name: btn.dataset.name,
+            price: parseFloat(btn.dataset.price),
+            image: btn.dataset.image,
+            quantity: 1
+          };
+
+          let cart = JSON.parse(localStorage.getItem("cart")) || [];
+          const existing = cart.find(i => i.id == product.id);
+
+          if (existing) {
+            existing.quantity++;
+          } else {
+            cart.push(product);
+          }
+
+          localStorage.setItem("cart", JSON.stringify(cart));
+          alert("Added to cart");
+        });
+      });
+    }
+
+    function attachZoomEvents() {
+      const modal = document.getElementById("myModal");
+      const modalImg = document.getElementById("img01");
+      const captionText = document.getElementById("caption");
+      const closeBtn = document.querySelector(".close");
+
+      document.querySelectorAll(".zoom-img").forEach(img => {
+        img.onclick = function () {
+          modal.style.display = "block";
+          modalImg.src = this.src;
+          captionText.innerHTML = this.alt;
+        };
+      });
+
+      closeBtn.onclick = () => modal.style.display = "none";
+      modal.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+    }
+  </script>
+
+</body>
+
+</html>

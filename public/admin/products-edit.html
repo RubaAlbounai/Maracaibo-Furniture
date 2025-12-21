@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background: #e91e63;
+        color: white;
+        padding: 1px;   
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    header h1 {
+        text-align: center;
+    }
+
+    .nav a {
+        float: right;
+        text-decoration: none;
+        color: #5f5d5d;
+        transition: 0.3s;
+    }
+
+    nav a.active {
+        text-decoration: underline;
+    }
+
+    .form-box {
+        background: #fce4ec;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 30px;
+    }
+
+    input,  textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .save-btn {
+        background: #e91e63;
+        color: white;
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+</style>
+
+<body>
+
+    <header>
+        <h1>Edit Product</h1>
+        <nav class="nav">
+            <a href="admin-products.html">Back to Products</a>
+        </nav>
+    </header>
+
+    <form id="editProductForm" class="form-box">
+        <input type="hidden" name="id">
+        <label>Name</label>
+        <input type="text" name="name" required>
+
+        <label>Category</label>
+        <select name="category" required>
+            <option value="Chairs">Chairs</option>
+            <option value="Sofas">Sofas</option>
+            <option value="Tables">Tables</option>
+            <option value="Beds">Beds</option>
+            <option value="Storage">Storage</option>
+            <option value="Accessories">Accessories</option>
+        </select>
+
+        <label>Price</label>
+        <input type="number" name="price" required>
+
+        <label>Image URL</label>
+        <input type="text" name="image" required>
+
+        <button class="save-btn" onclick="saveProduct()">Save</button>
+        <script src="/js/admin/products.js"></script>
+
+</body>
+</html>

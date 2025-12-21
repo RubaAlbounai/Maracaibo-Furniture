@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f6f6f6;
+    margin: 0;
+}
+
+header {
+    background: #ff7eb9;
+    color: #fff;
+    padding: 15px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+.header .nav a {
+       margin-right: 20px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #5f5d5d;
+    transition: 0.3s;
+}
+
+nav a.active {
+    text-decoration: underline;
+}
+
+.container {
+    width: 85%;
+    margin: 20px auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
+
+form label {
+    display: block;
+    margin-top: 12px;
+}
+
+form input,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px;
+    background: #ff5ca6;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: #ff3d8a;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+table td button {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+/*footer*/
+footer {
+    background: linear-gradient(to right, #FFE4EC, #FFFFFF);
+    justify-content: center;
+    text-align: center;    
+    width: 100%;
+    padding: 5% 0% ;
+}
+footer a{
+    text-decoration: none;
+    font-size: 18px;
+    color: #555;
+    transition: 0.3s;
+    padding: 20px;
+}
+footer p{
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #666;
+    padding: 20px;
+}
+footer a:hover {
+    color: #e74273;
+    font-size: 19px;
+}

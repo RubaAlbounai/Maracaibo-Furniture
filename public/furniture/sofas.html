@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sofas - Maracaibo</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="logo">Maracaibo Furniture</div>
+
+        <nav class="nav-links">
+            <a href="..\index.html">Home</a>
+            <a href="chairs.html">Chairs</a>
+            <a href="" class="active">Sofas</a>
+            <a href="tables.html">Tables</a>
+            <a href="beds.html">Beds</a>
+            <a href="accessories.html">Accessories</a>
+            <a href="../cart.html">Cart</a>
+            <a href="../checkout.html">Checkout</a>
+        </nav>
+    </header>
+    <!-- END HEADER -->
+    <!-- Page Title -->
+    <section class="hero">
+        <h1>Sofas Collection</h1>
+        <p>Discover stylish, comfortable sofas for every corner of your home.</p>
+        <button onclick="myFunction1()" id="myBtn"> Let's start</button>
+    </section>
+
+
+    <!-- Products Grid -->
+    <section class="categories">
+        <div id="sofas-list" class="category-grid">
+            <!-- Products will be loaded here -->
+        </div>
+    </section>
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+    <script src="../scripts/sofas.js"></script>
+
+    <footer>
+        <a class="openbtn" onclick="openNav()"> <i class="fa fa-fw fa-envelope"></i> Contact us</a> </div>
+        <p>This website is dedicated to showcasing furniture at attractive prices and of the best quality.</p>
+    </footer>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <p>Contact Sales</p>
+        <p>If you want to report an something, or if you want to make a suggestion
+            send us an e-mail:
+            maracaibo@gmail.com</p>
+    </div>
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "100%";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadSofas();
+        });
+
+        function loadSofas() {
+            const sofas = [
+                { id: 201, name: "Modern Gray Sofa", price: 800, image: "sofa1.jpg" },
+                { id: 202, name: "Luxury Leather Sofa", price: 1200, image: "sofa2.jpg" },
+                { id: 203, name: "Classic Family Sofa", price: 950, image: "sofa3.jpg" },
+                { id: 204, name: "Minimalist White Sofa", price: 1100, image: "sofa4.jpg" },
+                { id: 205, name: "Corner Comfort Sofa", price: 1300, image: "sofa5.jpg" },
+                { id: 206, name: "Blue Velvet Sofa", price: 1000, image: "sofa6.jpg" },
+            ];
+
+            const container = document.getElementById("sofas-list");
+            container.innerHTML = "";
+
+            sofas.forEach(sofa => {
+                const displayImage = `../furniture/assets/images/sofas/${sofa.image}`;
+                const cartImage = `furniture/assets/images/sofas/${sofa.image}`;
+
+                container.innerHTML += `
+            <div class="category-card">
+            <img class="zoom-img" src="${displayImage}" alt="${sofa.name}">
+            <h3>${sofa.name}</h3>
+            <p class="price">$${sofa.price}</p>
+            <button class="add-to-cart"
+            data-id="${sofa.id}"
+            data-name="${sofa.name}"
+            data-price="${sofa.price}"
+            data-image="${cartImage}">
+            Add to Cart
+            </button>
+            </div>
+    `;
+            });
+
+            attachCartEvents();
+            attachZoomEvents();
+        }
+
+        /* CART */
+        function attachCartEvents() {
+            document.querySelectorAll(".add-to-cart").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const product = {
+                        id: btn.dataset.id,
+                        name: btn.dataset.name,
+                        price: parseFloat(btn.dataset.price),
+                        image: btn.dataset.image,
+                        quantity: 1
+                    };
+
+                    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+                    const existing = cart.find(item => item.id == product.id);
+
+                    if (existing) {
+                        existing.quantity++;
+                    } else {
+                        cart.push(product);
+                    }
+
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    alert("Added to cart");
+                });
+            });
+        }
+
+        /* ZOOM */
+        function attachZoomEvents() {
+            const modal = document.getElementById("myModal");
+            const modalImg = document.getElementById("img01");
+            const captionText = document.getElementById("caption");
+            const closeBtn = document.querySelector(".close");
+
+            document.querySelectorAll(".zoom-img").forEach(img => {
+                img.onclick = () => {
+                    modal.style.display = "block";
+                    modalImg.src = img.src;
+                    captionText.innerHTML = img.alt;
+                };
+            });
+
+            closeBtn.onclick = () => modal.style.display = "none";
+            modal.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+        }
+    </script>
+
+
+    <script>
+        const modal = document.getElementById("myModal");
+        const modalImg = document.getElementById("img01");
+        const captionText = document.getElementById("caption");
+        const closeBtn = document.querySelector(".close");
+
+        // اختر كل الصور القابلة للتكبير
+        document.querySelectorAll(".zoom-img").forEach(img => {
+            img.addEventListener("click", function () {
+                modal.style.display = "block";
+                modalImg.src = this.src;
+                captionText.innerHTML = this.alt;
+            });
+        });
+
+        // إغلاق المودال
+        closeBtn.onclick = function () {
+            modal.style.display = "none";
+        };
+
+        // إغلاق عند الضغط خارج الصورة
+        modal.onclick = function (e) {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        }; </script>
+</body>
+
+</html>

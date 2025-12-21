@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Manage Products</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #e91e63;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #fce4ec;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .add-btn {
+            background: #e91e63;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .edit-btn {
+            background: #2196f3;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .form-box {
+            background: #fce4ec;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 30px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .save-btn {
+            background: #e91e63;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<header>Admin Panel - Manage Products</header>
+
+<div class="container">
+
+    <button class="add-btn" onclick="openForm()">+ Add New Product</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price ($)</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="product-table-body"></tbody>
+    </table>
+
+    <!-- PRODUCT FORM -->
+    <div id="productForm" class="form-box" style="display:none;">
+        <h3 id="form-title">Add Product</h3>
+
+        <input type="hidden" id="product-id">
+
+        <label>Name</label>
+        <input type="text" id="name">
+
+        <label>Description</label>
+        <textarea id="description"></textarea>
+
+        <label>Price</label>
+        <input type="number" id="price">
+
+        <label>Stock</label>
+        <input type="number" id="stock">
+
+        <button class="save-btn" onclick="saveProduct()">Save</button>
+    </div>
+
+</div>
+
+<script>
+    const apiBase = "http://127.0.0.1:8000/api/products";
+
+    // Load all products
+    async function loadProducts() {
+        const response = await fetch(apiBase);
+        const products = await response.json();
+
+        let rows = "";
+        products.forEach(p => {
+            rows += `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>${p.description}</td>
+                    <td>${p.price}</td>
+                    <td>${p.stock}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editProduct(${p.id}, '${p.name}', '${p.description}', ${p.price}, ${p.stock})">Edit</button>
+                        <button class="delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("product-table-body").innerHTML = rows;
+    }
+
+    loadProducts();
+
+    function openForm() {
+        document.getElementById("productForm").style.display = "block";
+        document.getElementById("form-title").innerText = "Add Product";
+        document.getElementById("product-id").value = "";
+        clearForm();
+    }
+
+    function editProduct(id, name, description, price, stock) {
+        document.getElementById("productForm").style.display = "block";
+        document.getElementById("form-title").innerText = "Edit Product";
+        document.getElementById("product-id").value = id;
+        document.getElementById("name").value = name;
+        document.getElementById("description").value = description;
+        document.getElementById("price").value = price;
+        document.getElementById("stock").value = stock;
+    }
+
+    async function saveProduct() {
+        const id = document.getElementById("product-id").value;
+        const data = {
+            name: document.getElementById("name").value,
+            description: document.getElementById("description").value,
+            price: document.getElementById("price").value,
+            stock: document.getElementById("stock").value
+        };
+
+        let method = "POST";
+        let url = apiBase;
+
+        if (id) {
+            method = "PUT";
+            url = `${apiBase}/${id}`;
+        }
+
+        await fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        alert("Product saved!");
+        document.getElementById("productForm").style.display = "none";
+        loadProducts();
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm("Delete this product?")) return;
+
+        await fetch(`${apiBase}/${id}`, { method: "DELETE" });
+
+        alert("Product deleted!");
+        loadProducts();
+    }
+
+    function clearForm() {
+        document.getElementById("name").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("stock").value = "";
+    }
+</script>
+
+</body>
+</html>

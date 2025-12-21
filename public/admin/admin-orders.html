@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Orders</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #ff4d88;
+      padding: 15px;
+      color: white;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    table th {
+      background: #ff99bb;
+      color: white;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .approve {
+      background: #28a745;
+      color: white;
+    }
+
+    .delete {
+      background: #dc3545;
+      color: white;
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+
+    .pending {
+      background: #ffc107;
+      color: black;
+    }
+
+    .approved {
+      background: #28a745;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>Admin – Orders Management</header>
+
+<div class="container">
+  <h2>All Orders</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User Name</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="ordersTable"></tbody>
+  </table>
+</div>
+
+<script>
+const apiBase = "http://127.0.0.1:8000/api";
+
+async function loadOrders() {
+  const res = await fetch(`${apiBase}/orders`);
+  const orders = await res.json();
+
+  const table = document.getElementById("ordersTable");
+  table.innerHTML = "";
+
+  orders.forEach(order => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${order.id}</td>
+      <td>${order.user_name || "Unknown"}</td>
+      <td>$${order.total}</td>
+      <td>
+        <span class="status ${order.status === 'approved' ? 'approved' : 'pending'}">
+          ${order.status}
+        </span>
+      </td>
+      <td>
+        ${order.status === "pending" ? 
+          `<button class="btn approve" onclick="approveOrder(${order.id})">Approve</button>` 
+          : ""
+        }
+        <button class="btn delete" onclick="deleteOrder(${order.id})">Delete</button>
+      </td>
+    `;
+
+    table.appendChild(row);
+  });
+}
+
+async function approveOrder(id) {
+  if (!confirm("Approve this order?")) return;
+
+  await fetch(`${apiBase}/orders/${id}/approve`, {
+    method: "PUT"
+  });
+
+  alert("Order approved!");
+  loadOrders();
+}
+
+async function deleteOrder(id) {
+  if (!confirm("Are you sure you want to delete this order?")) return;
+
+  await fetch(`${apiBase}/orders/${id}`, {
+    method: "DELETE"
+  });
+
+  alert("Order deleted!");
+  loadOrders();
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>
