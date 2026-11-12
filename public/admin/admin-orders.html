@@ -105,11 +105,12 @@
   </table>
 </div>
 
+<script src="/js/admin-auth.js"></script>
 <script>
-const apiBase = "http://127.0.0.1:8000/api";
+requireAdmin();
 
 async function loadOrders() {
-  const res = await fetch(`${apiBase}/orders`);
+  const res = await adminFetch("/orders");
   const orders = await res.json();
 
   const table = document.getElementById("ordersTable");
@@ -120,16 +121,16 @@ async function loadOrders() {
 
     row.innerHTML = `
       <td>${order.id}</td>
-      <td>${order.user_name || "Unknown"}</td>
-      <td>$${order.total}</td>
+      <td>${escapeHtml(order.customer_name)}</td>
+      <td>$${order.total_price}</td>
       <td>
         <span class="status ${order.status === 'approved' ? 'approved' : 'pending'}">
-          ${order.status}
+          ${escapeHtml(order.status)}
         </span>
       </td>
       <td>
-        ${order.status === "pending" ? 
-          `<button class="btn approve" onclick="approveOrder(${order.id})">Approve</button>` 
+        ${order.status === "pending"
+          ? `<button class="btn approve" onclick="approveOrder(${order.id})">Approve</button>`
           : ""
         }
         <button class="btn delete" onclick="deleteOrder(${order.id})">Delete</button>
@@ -142,23 +143,13 @@ async function loadOrders() {
 
 async function approveOrder(id) {
   if (!confirm("Approve this order?")) return;
-
-  await fetch(`${apiBase}/orders/${id}/approve`, {
-    method: "PUT"
-  });
-
-  alert("Order approved!");
+  await adminFetch(`/orders/${id}/approve`, { method: "PUT" });
   loadOrders();
 }
 
 async function deleteOrder(id) {
   if (!confirm("Are you sure you want to delete this order?")) return;
-
-  await fetch(`${apiBase}/orders/${id}`, {
-    method: "DELETE"
-  });
-
-  alert("Order deleted!");
+  await adminFetch(`/orders/${id}`, { method: "DELETE" });
   loadOrders();
 }
 

@@ -10,13 +10,6 @@
 
 <body>
 
-    <script>
-        // redirect if admin is not logged in
-        if (!localStorage.getItem("admin_token")) {
-            window.location.href = "../public/admin/login.html";
-        }
-    </script>
-
     <header class="admin-header">
         <h1>Admin Dashboard</h1>
         <button onclick="logout()" class="logout-btn">Logout</button>
@@ -51,15 +44,8 @@
 
     </section>
 
-    <script src="../public/admin/js/dashboard.js"></script>
-    <script>
-        // Redirect if admin is not logged in
-        const token = localStorage.getItem("admin_token");
-
-        if (!token) {
-            window.location.href = "../public/admin/login.html";
-        }
-    </script>
-</body>
+    <script src="/js/admin-auth.js"></script>
+    <script src="/admin/js/dashboard.js"></script>
+    </body>
 
 </html>

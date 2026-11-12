@@ -127,6 +127,9 @@
         <label>Description</label>
         <textarea id="description"></textarea>
 
+        <label>Category</label>
+        <input type="text" id="category" placeholder="e.g. Sofas">
+
         <label>Price</label>
         <input type="number" id="price">
 
@@ -138,25 +141,28 @@
 
 </div>
 
+<script src="/js/admin-auth.js"></script>
 <script>
-    const apiBase = "http://127.0.0.1:8000/api/products";
+    requireAdmin();
+    let productsById = {};
 
-    // Load all products
     async function loadProducts() {
-        const response = await fetch(apiBase);
+        const response = await fetch(`${API_BASE}/products`);
         const products = await response.json();
 
+        productsById = {};
         let rows = "";
         products.forEach(p => {
+            productsById[p.id] = p;
             rows += `
                 <tr>
                     <td>${p.id}</td>
-                    <td>${p.name}</td>
-                    <td>${p.description}</td>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td>${escapeHtml(p.description)}</td>
                     <td>${p.price}</td>
                     <td>${p.stock}</td>
                     <td>
-                        <button class="edit-btn" onclick="editProduct(${p.id}, '${p.name}', '${p.description}', ${p.price}, ${p.stock})">Edit</button>
+                        <button class="edit-btn" onclick="editProduct(${p.id})">Edit</button>
                         <button class="delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
                     </td>
                 </tr>
@@ -175,58 +181,53 @@
         clearForm();
     }
 
-    function editProduct(id, name, description, price, stock) {
+    function editProduct(id) {
+        const p = productsById[id];
         document.getElementById("productForm").style.display = "block";
         document.getElementById("form-title").innerText = "Edit Product";
         document.getElementById("product-id").value = id;
-        document.getElementById("name").value = name;
-        document.getElementById("description").value = description;
-        document.getElementById("price").value = price;
-        document.getElementById("stock").value = stock;
+        document.getElementById("name").value = p.name;
+        document.getElementById("category").value = p.category;
+        document.getElementById("description").value = p.description ?? "";
+        document.getElementById("price").value = p.price;
+        document.getElementById("stock").value = p.stock;
     }
 
     async function saveProduct() {
         const id = document.getElementById("product-id").value;
         const data = {
             name: document.getElementById("name").value,
+            category: document.getElementById("category").value,
             description: document.getElementById("description").value,
             price: document.getElementById("price").value,
             stock: document.getElementById("stock").value
         };
 
-        let method = "POST";
-        let url = apiBase;
-
-        if (id) {
-            method = "PUT";
-            url = `${apiBase}/${id}`;
-        }
-
-        await fetch(url, {
-            method: method,
-            headers: { "Content-Type": "application/json" },
+        const response = await adminFetch(id ? `/products/${id}` : "/products", {
+            method: id ? "PUT" : "POST",
             body: JSON.stringify(data)
         });
 
-        alert("Product saved!");
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            alert(error.message || "Could not save the product.");
+            return;
+        }
+
         document.getElementById("productForm").style.display = "none";
         loadProducts();
     }
 
     async function deleteProduct(id) {
         if (!confirm("Delete this product?")) return;
-
-        await fetch(`${apiBase}/${id}`, { method: "DELETE" });
-
-        alert("Product deleted!");
+        await adminFetch(`/products/${id}`, { method: "DELETE" });
         loadProducts();
     }
 
     function clearForm() {
-        document.getElementById("name").value = "";
-        document.getElementById("description").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("stock").value = "";
+        ["name", "category", "description", "price", "stock"].forEach(id => {
+            document.getElementById(id).value = "";
+        });
     }
 </script>
 

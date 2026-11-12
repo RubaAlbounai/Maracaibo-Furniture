@@ -1,4 +1,4 @@
-const apiBase = "http://localhost:8000/api/products/category/accessories";
+const apiBase = "/api/products/category/accessories";
 
 async function loadAccessories() {
   try {

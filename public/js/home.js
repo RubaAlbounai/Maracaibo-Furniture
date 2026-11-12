@@ -1,4 +1,4 @@
-const apiBase = "http://127.0.0.1:8000/api";
+const apiBase = "/api";
 
 async function loadPreview() {
     const res = await fetch(`${apiBase}/products`);

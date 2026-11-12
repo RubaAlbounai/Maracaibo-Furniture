@@ -2,79 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Product;
-
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
+    /** GET /api/orders (admin) */
     public function index()
     {
-        return Order::with('items.product')->get();
-    }    
-
-    public function store(Request $request)
-    {
-   $request->validate([
-        'customer_name' => 'required|string',
-        'customer_email' => 'required|email',
-        'address' => 'required|string',
-        'items' => 'required|array|min:1',
-        'items.*.id' => 'required|exists:products,id',
-        'items.*.quantity' => 'required|integer|min:1',
-        'items.*.price' => 'required|numeric',
-    ]);
-
-    // 1️⃣ حساب المجموع
-    $total = 0;
-    foreach ($request->items as $item) {
-        $total += $item['price'] * $item['quantity'];
+        return Order::with('items.product')->latest()->get();
     }
 
-    // 2️⃣ إنشاء الطلب
-    $order = Order::create([
-        'customer_name' => $request->customer_name,
-        'customer_email' => $request->customer_email,
-        'address' => $request->address,
-        'total_price' => $total,
-    ]);
-
-    // 3️⃣ إنشاء عناصر الطلب
-    foreach ($request->items as $item) {
-        OrderItem::create([
-            'order_id' => $order->id,
-            'product_id' => $item['id'],
-            'quantity' => $item['quantity'],
-            'price' => $item['price'],
-        ]);
+    /** GET /api/orders/{order} (admin) */
+    public function show(Order $order): Order
+    {
+        return $order->load('items.product');
     }
 
-    return response()->json([
-        'message' => 'Order created successfully',
-        'order_id' => $order->id
-    ], 201);
-}
-
-    public function show($id)
+    /** POST /api/orders (public checkout) */
+    public function store(StoreOrderRequest $request): JsonResponse
     {
-        return Order::with('items.product')->findOrFail($id);
+        // Merge duplicate lines: [{id:1,q:1},{id:1,q:2}] => [1 => 3]
+        $quantities = collect($request->validated('items'))
+            ->groupBy('id')
+            ->map(fn ($lines) => (int) $lines->sum('quantity'));
+
+        $order = DB::transaction(function () use ($request, $quantities) {
+            $products = Product::whereIn('id', $quantities->keys())
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            $total = 0;
+            $lines = [];
+
+            foreach ($quantities as $productId => $quantity) {
+                $product = $products[$productId];
+
+                if ($product->stock < $quantity) {
+                    throw ValidationException::withMessages([
+                        'items' => ["Not enough stock for \"{$product->name}\"."],
+                    ]);
+                }
+
+                // The price always comes from the database, never from the request.
+                $total += $product->price * $quantity;
+
+                $lines[] = [
+                    'product_id' => $product->id,
+                    'quantity' => $quantity,
+                    'price' => $product->price,
+                ];
+            }
+
+            $order = Order::create([
+                'customer_name' => $request->validated('customer_name'),
+                'customer_email' => $request->validated('customer_email'),
+                'address' => $request->validated('address'),
+                'total_price' => round($total, 2),
+                'status' => Order::PENDING,
+            ]);
+
+            $order->items()->createMany($lines);
+
+            foreach ($quantities as $productId => $quantity) {
+                $products[$productId]->decrement('stock', $quantity);
+            }
+
+            return $order;
+        });
+
+        return response()->json([
+            'message' => 'Order created successfully.',
+            'order' => $order->load('items.product'),
+        ], 201);
     }
-    
 
-    public function approve($id)
+    /** PUT /api/orders/{order}/approve (admin) */
+    public function approve(Order $order): Order
     {
-    $order = Order::findOrFail($id);
-    $order->status = 'approved';
-    $order->save();
+        $order->update(['status' => Order::APPROVED]);
 
-    return response()->json(['message' => 'Order approved']);
+        return $order->load('items.product');
     }
 
-    public function destroy($id)
+    /** DELETE /api/orders/{order} (admin) */
+    public function destroy(Order $order): Response
     {
-        Order::destroy($id);
+        $order->delete();
+
         return response()->noContent();
     }
 }

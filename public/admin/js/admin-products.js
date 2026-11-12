@@ -1,4 +1,4 @@
-const apiBase = "http://127.0.0.1:8000/api/products";
+const apiBase = "/api/products";
 
 // Load products at start
 document.addEventListener("DOMContentLoaded", loadProducts);

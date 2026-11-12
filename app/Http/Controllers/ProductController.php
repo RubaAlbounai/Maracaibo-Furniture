@@ -2,48 +2,62 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
-    public function byCategory($category)
+    /** GET /api/products[?category=sofas] */
+    public function index(Request $request)
     {
-        return Product::where('category', $category)->get();
+        return Product::query()
+            ->when($request->query('category'), fn ($query, $category) => $this->inCategory($query, $category))
+            ->orderBy('id')
+            ->get();
     }
 
-    public function index()
+    /** GET /api/products/category/{category} */
+    public function byCategory(string $category)
     {
-        return Product::all();
+        return $this->inCategory(Product::query(), $category)->orderBy('id')->get();
     }
 
-    public function store(Request $request)
+    /** GET /api/products/{product} */
+    public function show(Product $product): Product
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
-        ]);
-
-        return Product::create($request->all());
-    }
-
-    public function show($id)
-    {
-        return Product::findOrFail($id);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
-        $product->update($request->all());
         return $product;
     }
 
-    public function destroy($id)
+    /** POST /api/products (admin) */
+    public function store(ProductRequest $request): JsonResponse
     {
-        Product::destroy($id);
+        $product = Product::create($request->validated());
+
+        return response()->json($product, 201);
+    }
+
+    /** PUT /api/products/{product} (admin) */
+    public function update(ProductRequest $request, Product $product): Product
+    {
+        $product->update($request->validated());
+
+        return $product;
+    }
+
+    /** DELETE /api/products/{product} (admin) */
+    public function destroy(Product $product): Response
+    {
+        $product->delete();
+
         return response()->noContent();
+    }
+
+    private function inCategory($query, string $category)
+    {
+        // Case-insensitive so "sofas" and "Sofas" both work.
+        return $query->whereRaw('LOWER(category) = ?', [strtolower($category)]);
     }
 }
