@@ -1,78 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maracaibo Furniture</title>
-
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+<title>Maracaibo Furniture | Modern furniture for every room</title>
+<meta name="description" content="Browse sofas, beds, chairs, tables and accessories. Quality furniture at honest prices.">
 </head>
+<body data-page="home">
+<div id="site-header"></div>
 
-<body>
-
-    <!-- HEADER -->
-    <header class="main-header">
-        <div class="logo">Maracaibo Furniture</div>
-
-        <nav class="nav-links">
-            <a class="active" href="index.html">Home</a>
-            <a href="furniture/chairs.html">Chairs</a>
-            <a href="furniture/sofas.html">Sofas</a>
-            <a href="furniture/tables.html">Tables</a>
-            <a href="furniture/beds.html">Beds</a>
-            <a href="furniture/accessories.html">Accessories</a>
-            <a href="cart.html">Cart</a>
-            <a href="checkout.html">Checkout</a>
-        </nav>
-    </header>
-    <!-- END HEADER -->
-
-    <!-- HERO SECTION -->
-    <section class="hero">
-        <h1>Make Your Home Beautiful</h1>
-        <p>Explore stylish and modern furniture designed to bring comfort to your space.</p>
-        <a href="furniture/chairs.html" class="btn-shop">Shop Now</a>
-    </section>
-
-    <!-- CATEGORIES SECTION -->
-   <!--<section class="categories">
-        <h2 class="section-title">Shop by Category, Choose your way!</h2>
-        <div class="category-grid">
-            <a href="furniture/chairs.html" class="category-card">Chairs</a>
-            <a href="furniture/sofas.html" class="category-card">Sofas</a>
-            <a href="furniture/tables.html" class="category-card">Tables</a>
-            <a href="furniture/beds.html" class="category-card">Beds</a>
-            <a href="furniture/storage.html" class="category-card">Storage</a>
-            <a href="furniture/accessories.html" class="category-card">Accessories</a>
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Furniture for modern living</span>
+        <h1>Make your home feel like yours.</h1>
+        <p class="lead">Sofas, beds, chairs, tables and accessories chosen for comfort and lasting quality. Pick what you love and order online in minutes.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/products.html">Shop the collection</a>
+          <a class="btn btn-ghost" href="/products.html?category=sofas">Browse sofas</a>
         </div>
-    </section>-->
-
-    <script src="js/api.js"></script>
-
-    <footer>
-        <a class="openbtn" onclick="openNav()"> <i class="fa fa-fw fa-envelope"></i> Contact us</a> </div>
-        <p>© 2025 E-commerce Demo. All rights reserved.</p>
-        <p>Tip: Clear product details and simple checkout improve user experience.</p>
-    </footer>
-    <div id="mySidenav" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <p>Contact Sales</p>
-        <p>If you want to report an something, or if you want to make a suggestion
-            send us an e-mail:
-            maracaibo@gmail.com</p>
+      </div>
+      <div class="hero-media">
+        <img src="/furniture/assets/images/sofas/sofa4.jpg" alt="Navy Chesterfield sofa in a bright living room" width="1600" height="1200" fetchpriority="high">
+        <div class="hero-tag"><strong>Navy Chesterfield Sofa</strong><span>Button-tufted velvet</span></div>
+      </div>
     </div>
-    <script>
-        function openNav() {
-            document.getElementById("mySidenav").style.width = "100%";
-        }
+  </section>
 
-        function closeNav() {
-            document.getElementById("mySidenav").style.width = "0";
-        }
-    </script>
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">Collections</span><h2>Shop by room and style</h2></div>
+        <a class="link-arrow" href="/products.html">View everything</a>
+      </div>
+      <div class="tiles" id="tiles"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">Featured</span><h2>Popular right now</h2></div>
+        <a class="link-arrow" href="/products.html">Shop all products</a>
+      </div>
+      <div class="grid" id="featured" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">How it works</span><h2>Ordering made simple</h2></div></div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><h3>Choose your pieces</h3><p>Browse by category, zoom into the photos and add your favourites to the cart.</p></div>
+        <div class="step"><div class="step-num">2</div><h3>Place your order</h3><p>Enter your name, email and delivery address. No account needed.</p></div>
+        <div class="step"><div class="step-num">3</div><h3>We confirm it</h3><p>Our team reviews and approves each order, then gets in touch with the details.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="/js/shop.js"></script>
+<script src="/js/home.js"></script>
 </body>
-
 </html>

@@ -1,145 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+<title>Checkout | Maracaibo Furniture</title>
+<meta name="description" content="Enter your details to place your order.">
 </head>
+<body data-page="checkout">
+<div id="site-header"></div>
 
-<body>
-
-  <!-- HEADER -->
-  <header class="main-header">
-    <h1 class="logo">Maracaibo Furniture</h1>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="cart.html">Cart</a>
-      <a href="checkout.html" class="active">Checkout</a>
-    </nav>
-  </header>
-
-  <!-- PAGE TITLE -->
-  <section class="page-title">
-    <h2>Checkout</h2>
+<main>
+  <section class="container page-head"><span class="eyebrow">Checkout</span><h1>Place your order</h1></section>
+  <section class="container" style="padding-top:22px">
+    <div id="checkout-root" class="layout-2"></div>
   </section>
-
-  <!-- ORDER SUMMARY -->
-  <section id="checkout-items" class="checkout-list"></section>
-
-  <!-- TOTAL PRICE -->
-  <section class="checkout-total">
-    <h3>Total: <span id="checkout-total">0</span> USD</h3>
-  </section>
-
-  <!-- CUSTOMER FORM -->
-  <section class="checkout-form">
-    <h2>Customer Information</h2>
-
-    <form id="order-form">
-      <input type="text" id="name" placeholder="Full Name" required>
-      <input type="email" id="email" placeholder="Email Address" required>
-      <input type="text" id="address" placeholder="Shipping Address" required>
-      <button type="submit">Place Order</button>
-    </form>
-  </section>
-
-  <script src="js/checkout.js"></script>
-  <footer>
-    <a class="openbtn" onclick="openNav()"> <i class="fa fa-fw fa-envelope"></i> Contact us</a> </div>
-    <p> © 2025 E-comm</p>
-  </footer>
-  <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <p>Contact Sales</p>
-    <p>If you want to report an something, or if you want to make a suggestion
-      send us an e-mail:
-      maracaibo@gmail.com</p>
-  </div>
-  <script>
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "100%";
-    }
-
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-    }
-  </script>
+</main>
+<div id="site-footer"></div>
+<script src="/js/shop.js"></script>
+<script src="/js/checkout.js"></script>
 </body>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    loadCheckoutItems();
-  });
-
-  /* =========================
-     LOAD CART ITEMS
-  ========================= */
-  function loadCheckoutItems() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const container = document.getElementById("checkout-items");
-    const totalEl = document.getElementById("checkout-total");
-
-    container.innerHTML = "";
-    let total = 0;
-
-    if (cart.length === 0) {
-      container.innerHTML = "<p>Your cart is empty.</p>";
-      totalEl.innerText = "0";
-      return;
-    }
-
-    cart.forEach(item => {
-      const itemTotal = item.price * item.quantity;
-      total += itemTotal;
-
-      container.innerHTML += `
-      <div class="checkout-item">
-        <img src="${item.image}" alt="${item.name}" width="80">
-        <div>
-          <h4>${item.name}</h4>
-          <p>Quantity: ${item.quantity}</p>
-          <p>Price: $${itemTotal}</p>
-        </div>
-      </div>
-    `;
-    });
-
-    totalEl.innerText = total;
-  }
-
-  /* =========================
-     SUBMIT ORDER
-  ========================= */
-  document.getElementById("order-form").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    if (cart.length === 0) {
-      alert("Cart is empty");
-      return;
-    }
-
-    const order = {
-      customer_name: document.getElementById("name").value,
-      customer_email: document.getElementById("email").value,
-      address: document.getElementById("address").value,
-      items: cart,
-      total: document.getElementById("checkout-total").innerText
-    };
-
-    console.log("ORDER DATA:", order); // للتأكد فقط
-
-    // مؤقتًا (بدون API)
-    alert("Order placed successfully!");
-
-    localStorage.removeItem("cart");
-    window.location.href = "index.html";
-  });
-
-</script>
-
 </html>

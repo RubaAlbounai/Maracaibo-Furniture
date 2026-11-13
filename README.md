@@ -5,8 +5,10 @@ A furniture e-commerce platform: a storefront in plain HTML/CSS/JavaScript backe
 ## Features
 
 **Storefront**
-- Category pages (sofas, beds, chairs, tables, accessories) loaded from the API
-- Image zoom, shopping cart (saved in the browser), checkout
+- Home page with featured products and category tiles
+- One shop page with category filters, search and sorting (all products come from the API)
+- Image zoom, shopping cart with quantities (saved in the browser), checkout with a confirmation screen
+- Responsive layout with a mobile menu
 
 **Admin panel**
 - Token-based login (Laravel Sanctum)
@@ -42,7 +44,7 @@ ADMIN_PASSWORD=choose-a-strong-password
 ```
 
 ```bash
-php artisan migrate --seed   # use `migrate:fresh --seed` if you ran an older version
+php artisan migrate:fresh --seed   # creates the tables, 31 demo products and your admin user
 php artisan serve
 ```
 
@@ -83,6 +85,7 @@ app/Http/Middleware    EnsureUserIsAdmin
 app/Models             Product, Order, OrderItem, User
 database/migrations    schema   ·   database/seeders  demo products + admin user
 routes/api.php         REST API
-public/                static storefront and admin pages
+public/                static storefront (index, products, cart, checkout) and admin pages
+public/js/shop.js      shared storefront code: cart, header/footer, product cards
 tests/Feature          API tests
 ```
