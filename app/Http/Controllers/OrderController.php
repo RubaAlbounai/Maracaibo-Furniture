@@ -64,6 +64,7 @@ class OrderController extends Controller
                 'customer_name' => $request->validated('customer_name'),
                 'customer_email' => $request->validated('customer_email'),
                 'address' => $request->validated('address'),
+                'payment_method' => $request->validated('payment_method'),
                 'total_price' => round($total, 2),
                 'status' => Order::PENDING,
             ]);

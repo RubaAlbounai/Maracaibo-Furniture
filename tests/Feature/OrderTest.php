@@ -19,6 +19,7 @@ class OrderTest extends TestCase
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.com',
             'address' => '1 Main Street, Moscow',
+            'payment_method' => 'cash_on_delivery',
             'items' => $items,
         ];
     }
@@ -98,5 +99,31 @@ class OrderTest extends TestCase
         $this->putJson("/api/orders/{$order->id}/approve")->assertOk();
 
         $this->assertSame('approved', $order->fresh()->status);
+    }
+
+    public function test_the_chosen_payment_method_is_saved(): void
+    {
+        $product = Product::factory()->create(['stock' => 5]);
+
+        $data = $this->payload([['id' => $product->id, 'quantity' => 1]]);
+        $data['payment_method'] = 'bank_transfer';
+
+        $this->postJson('/api/orders', $data)->assertCreated();
+
+        $this->assertSame('bank_transfer', Order::first()->payment_method);
+    }
+
+    public function test_unknown_payment_methods_are_rejected(): void
+    {
+        $product = Product::factory()->create(['stock' => 5]);
+
+        $data = $this->payload([['id' => $product->id, 'quantity' => 1]]);
+        $data['payment_method'] = 'bitcoin';
+
+        $this->postJson('/api/orders', $data)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('payment_method');
+
+        $this->assertSame(0, Order::count());
     }
 }

@@ -25,6 +25,17 @@
           <label>Full name<input id="name" name="name" type="text" autocomplete="name" required maxlength="255"></label>
           <label>Email<input id="email" name="email" type="email" autocomplete="email" required maxlength="255"></label>
           <label>Delivery address<textarea id="address" name="address" rows="3" autocomplete="street-address" required maxlength="500"></textarea></label>
+          <fieldset class="pay-methods">
+            <legend>Payment method</legend>
+            <label class="pay-option">
+              <input type="radio" name="payment" value="cash_on_delivery" checked>
+              <span><strong>Cash on delivery</strong><small>Pay when your order arrives.</small></span>
+            </label>
+            <label class="pay-option">
+              <input type="radio" name="payment" value="bank_transfer">
+              <span><strong>Bank transfer</strong><small>We email you the bank details once your order is approved.</small></span>
+            </label>
+          </fieldset>
           <button class="btn btn-wood btn-block" id="submit" type="submit">Place order</button>
           <p class="note" style="margin:0">Your order is reviewed and confirmed by our team. You will be contacted at the email above.</p>
         </div>
@@ -61,6 +72,7 @@
       customer_name: document.getElementById("name").value.trim(),
       customer_email: document.getElementById("email").value.trim(),
       address: document.getElementById("address").value.trim(),
+      payment_method: document.querySelector('input[name="payment"]:checked').value,
       // Prices are NOT sent: the server reads them from the database.
       items: items.map((i) => ({ id: Number(i.id), quantity: Number(i.quantity) || 1 })),
     };
@@ -102,7 +114,7 @@
       <div class="panel success">
         <div class="check" aria-hidden="true">&#10003;</div>
         <h2>Thank you, your order is in!</h2>
-        <p>Order <strong>#${esc(order && order.id)}</strong> for <strong>${money(order && order.total_price)}</strong> has been received. Our team will review it and contact you by email.</p>
+        <p>Order <strong>#${esc(order && order.id)}</strong> for <strong>${money(order && order.total_price)}</strong> has been received. Payment: <strong>${order && order.payment_method === "bank_transfer" ? "bank transfer (details will be emailed to you)" : "cash on delivery"}</strong>. Our team will review your order and contact you by email.</p>
         <a class="btn btn-primary" href="/products.html">Continue shopping</a>
       </div>`;
     window.scrollTo({ top: 0, behavior: "smooth" });

@@ -7,7 +7,7 @@ A furniture e-commerce platform: a storefront in plain HTML/CSS/JavaScript backe
 **Storefront**
 - Home page with featured products and category tiles
 - One shop page with category filters, search and sorting (all products come from the API)
-- Image zoom, shopping cart with quantities (saved in the browser), checkout with a confirmation screen
+- Image zoom, shopping cart with quantities (saved in the browser), checkout with a choice of payment method (cash on delivery or bank transfer) and a confirmation screen
 - Responsive layout with a mobile menu
 
 **Admin panel**
@@ -57,7 +57,7 @@ Open http://127.0.0.1:8000 for the store and http://127.0.0.1:8000/admin/login.h
 | GET | `/api/products` | public | List products (`?category=sofas` to filter) |
 | GET | `/api/products/category/{category}` | public | Products in a category |
 | GET | `/api/products/{id}` | public | One product |
-| POST | `/api/orders` | public | Place an order (`customer_name`, `customer_email`, `address`, `items[{id, quantity}]`) |
+| POST | `/api/orders` | public | Place an order (`customer_name`, `customer_email`, `address`, `payment_method`, `items[{id, quantity}]`) |
 | POST | `/api/admin/login` | public | Returns an admin token |
 | POST | `/api/admin/logout` | admin | Revoke the current token |
 | GET | `/api/admin/dashboard-stats` | admin | Totals and revenue |
